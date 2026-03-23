@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f9f9f9;
+      font-family: 'Montserrat', sans-serif;
+      padding: 24px;
+    }
+
+    .box {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 36px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    h1 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #111;
+      margin-bottom: 24px;
+    }
+
+    label {
+      font-size: 0.75rem;
+      color: #888;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      color: #111;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #bbb;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 11px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    .result {
+      margin-top: 24px;
+      display: none;
+    }
+
+    .age {
+      font-size: 2.5rem;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .age span {
+      font-size: 0.9rem;
+      color: #aaa;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    .info {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #888;
+      line-height: 1.8;
+    }
+
+    .error {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #e05555;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>Age Calculator</h1>
+
+    <label>Date of birth</label>
+    <input type="date" id="dob" />
+    <p class="error" id="error">Please enter a valid date.</p>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="result" id="result">
+      <div class="age" id="years">--<span>years old</span></div>
+      <div class="info" id="info"></div>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      const dob = new Date(document.getElementById('dob').value);
+      const today = new Date();
+      const error = document.getElementById('error');
+      const result = document.getElementById('result');
+
+      error.style.display = 'none';
+      result.style.display = 'none';
+
+      if (!dob || dob >= today) {
+        error.style.display = 'block';
+        return;
+      }
+
+      let years = today.getFullYear() - dob.getFullYear();
+      let months = today.getMonth() - dob.getMonth();
+      let days = today.getDate() - dob.getDate();
+
+      if (days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+      if (months < 0) { years--; months += 12; }
+
+      const totalDays = Math.floor((today - dob) / (1000 * 60 * 60 * 24));
+
+      let next = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+      if (next <= today) next.setFullYear(today.getFullYear() + 1);
+      const daysLeft = Math.ceil((next - today) / (1000 * 60 * 60 * 24));
+
+      document.getElementById('years').innerHTML = `${years}<span>years old</span>`;
+      document.getElementById('info').innerHTML =
+        `${months} months, ${days} days<br>${totalDays.toLocaleString()} days total<br>birthday in ${daysLeft} days`;
+
+      result.style.display = 'block';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+  </script>
+
+</body>
+</html>
